@@ -5,6 +5,7 @@
 
 
   const requiereOut=async(to,from,next)=>{
+    // recuerda que llevan un orden el to, from, next
      const useStore=useUserStore();
      useStore.loadingSession=true;
      const user= await useStore.currentUser();
