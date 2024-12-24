@@ -9,6 +9,7 @@ export const useDatabaseStore = defineStore('database', {
     state: () => ({
         documents: [],
         loadingDoc: false,
+        loadingUrl:false
     }),
     actions: {
         async getUrls() {
@@ -32,6 +33,7 @@ export const useDatabaseStore = defineStore('database', {
             }
         },
         async addUrl(name) {
+            this.loadingUrl=true
             try {
                 const objetoDoc = {
                     name: name,
@@ -45,8 +47,9 @@ export const useDatabaseStore = defineStore('database', {
                 })
             } catch (error) {
                 console.log(error)
+                return error.code
             } finally {
-
+                this.loadingUrl=false
             }
         },
         async deleteUrl(id) {
@@ -59,11 +62,11 @@ export const useDatabaseStore = defineStore('database', {
                 if (documento.data().user !== auth.currentUser.uid) {
                     throw new Error("No esta autorizado")
                 }
-
                 await deleteDoc(docRef)
                 this.documents = this.documents.filter(item => item.id !== id)
             } catch (error) {
-                console.log(error)
+                console.log(error.code)
+                return error.code
             } finally {
 
             }
@@ -82,6 +85,7 @@ export const useDatabaseStore = defineStore('database', {
 
             } catch (error) {
                 console.log(error)
+                return error.code
             } finally {
 
             }
@@ -105,6 +109,7 @@ export const useDatabaseStore = defineStore('database', {
                 router.push("/")
             } catch (error) {
                 console.log(error)
+                return error.code
             }
         },
     }

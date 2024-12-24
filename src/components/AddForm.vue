@@ -1,47 +1,36 @@
 <script setup>
 import { message } from 'ant-design-vue';
 import { reactive } from 'vue';
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import { useDatabaseStore } from '../stores/dataBase';
 
-const useData=useDatabaseStore();
-const route = useRoute();
-console.log(route.params.id)
+const useDataBase = useDatabaseStore();
+
 const formState = reactive({
     url: '',
 })
 
-const handleSubmit = () => {
-    // console.log("editar")
-    useData.editarUrl(route.params.id,url.value)
-}
 const onFinish = async (value) => {
     console.log('Todo correcto' + value);
-    const error = await useData.editarUrl(route.params.id,formState.url);
+    const error = await useDataBase.addUrl(formState.url);
     console.log(error)
     if (!error) {
         formState.url = ''
-        message.success('Se ha editado la url');
+        message.success('Se ha guardado la url');
     } else {
         switch (error) {
             default: message.error('Problema en el servidor, intente mas tarde')
                 break;
         }
     }
-}
-
-onMounted(async()=>{
-    formState.url=await useData.leerUrl(route.params.id)
-})
-
+};
 </script>
 
+
 <template>
+
     <a-row>
-        <h1>Edicion de Url: {{ route.params.id }}</h1>
         <a-col :span="12" :offset="6">
-            <a-form name="editUrl" autocomplete="off" layout="vertical" :model="formState" @finish="onFinish">
+            <a-form name="addForm" autocomplete="off" layout="vertical" :model="formState" @finish="onFinish">
                 <a-form-item name="url" label="Ingresa el Url" :rules="[{
                     required: true,
                     whitespace: true,
@@ -51,7 +40,7 @@ onMounted(async()=>{
                     <a-input v-model:value="formState.url"></a-input>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" html-type="submit" :loading="useData.loadingUrl">Editar
+                    <a-button type="primary" html-type="submit" :loading="useDataBase.loadingUrl">Agregar
                         Url</a-button>
                 </a-form-item>
             </a-form>

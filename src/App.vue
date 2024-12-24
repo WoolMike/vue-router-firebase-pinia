@@ -1,32 +1,50 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from './stores/user';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
+const route=useRoute();
 const useStore = useUserStore();
-
+watch(()=>route.name,()=>selectedKeys.value=[route.name])
+const selectedKeys = ref([]);
 </script>
 
 <template>
-  <div>
-    <h1>App</h1>
-    <a-button type="primary">Boton ant</a-button>
-    <nav v-if="!useStore.loadingSession">
-      <div>
-        <router-link to="/" class="btn btn-danger" v-if="useStore.userData">Home</router-link>
-        <router-link to="/login" class="btn btn-success" v-if="!useStore.userData">Login</router-link>
-        <router-link to="/register" class="btn btn-warning" v-if="!useStore.userData">Register</router-link>
-        <button class="btn btn-primary justify-content-md-end" @click="useStore.logoutUser"
-          v-if="useStore.userData">Logout</button>
-      </div>
-    </nav>
-    <div v-else>
-      <h1>Cargando sesion...</h1>
-    </div>
-    <div class="container text-center">
-      <RouterView />
+  <a-layout>
+    <a-layout-header v-if="!useStore.loadingSession">
+      <a-menu  theme="dark" mode="horizontal" v-model:selectedKeys="selectedKeys">
+        <a-menu-item v-if="useStore.userData" key="home">
+          <router-link to="/">Home</router-link>
+        </a-menu-item>
+        <a-menu-item v-if="!useStore.userData" key="login">
+          <router-link to="/login">Login</router-link>
+        </a-menu-item>
+        <a-menu-item v-if="!useStore.userData" key="register">
+          <router-link to="/register">Register</router-link>
+        </a-menu-item>
+        <a-menu-item @click="useStore.logoutUser" v-if="useStore.userData" key="logout">
+          <button class="btn btn-danger" >Logout</button>
+        </a-menu-item>
 
-    </div>
-  </div>
+      </a-menu>
+
+
+    </a-layout-header>
+    <a-layout-content style="padding: 0 50px">
+      <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
+        <div v-if="useStore.loadingSession">
+          <h1>Cargando sesion...</h1>
+        </div>
+        <div>
+          <RouterView />
+        </div>
+      </div>
+
+    </a-layout-content>
+
+  </a-layout>
+
 
 
 </template>
