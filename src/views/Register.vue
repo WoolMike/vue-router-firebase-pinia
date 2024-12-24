@@ -22,14 +22,16 @@ const onFinish = async (values) => {
     const res =await useStore.registerUser(formState.email, formState.password,formState.confirmpassword);
     if(!res){
         message.success('Registro exitoso');
-    }
-    switch(res){
+    }else{
+         switch(res){
         case 'auth/email-already-in-use':
         message.error('Este correo ya esta registrado');
         break;
         default:
         message.error('Ocurrio un problema en el servidor');
     }
+    }
+   
 }
 
 const validatePass = async (_rule, value) => {

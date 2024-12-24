@@ -17,6 +17,9 @@ const selectedKeys = ref([]);
         <a-menu-item v-if="useStore.userData" key="home">
           <router-link to="/">Home</router-link>
         </a-menu-item>
+        <a-menu-item v-if="useStore.userData" key="perfil">
+          <router-link to="/perfil">Perfil</router-link>
+        </a-menu-item>
         <a-menu-item v-if="!useStore.userData" key="login">
           <router-link to="/login">Login</router-link>
         </a-menu-item>
