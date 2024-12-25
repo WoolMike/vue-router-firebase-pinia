@@ -31,15 +31,13 @@ const selectedKeys = ref([]);
         </a-menu-item>
 
       </a-menu>
-
-
     </a-layout-header>
     <a-layout-content style="padding: 0 50px">
       <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
         <div v-if="useStore.loadingSession">
           <h1>Cargando sesion...</h1>
         </div>
-        <div>
+        <div v-else>
           <RouterView />
         </div>
       </div>

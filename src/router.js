@@ -2,6 +2,7 @@
 
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from './stores/user.js';
+import { useDatabaseStore } from "./stores/dataBase.js";
 
 
 const requiereOut = async (to, from, next) => {
@@ -15,6 +16,25 @@ const requiereOut = async (to, from, next) => {
         next('/login');
     }
     useStore.loadingSession = false;
+};
+
+
+const redireccion=async(to,from,next)=>{
+    const useStore = useUserStore();
+    useStore.loadingSession = true;
+    const useData=useDatabaseStore();
+    console.log(to.params.pathMatch[0]);
+    const resp =await useData.redirectUrl(to.params.pathMatch[0]);
+    if(!resp){
+        next();
+        useStore.loadingSession = false;
+    }else{
+        window.location.href=resp;
+        useStore.loadingSession=true;
+        next();
+    }
+    
+    
 };
 
 const router = createRouter({
@@ -49,6 +69,12 @@ const router = createRouter({
             name:'perfil',
             component:()=> import('../src/views/Perfil.vue'),
             beforeEnter:requiereOut,
+        },
+        {
+            path:'/:pathMatch(.*)*',
+            name:'404',
+            component:()=> import('../src/views/NotFound.vue'),
+            beforeEnter:redireccion,
         },
     ],
 });

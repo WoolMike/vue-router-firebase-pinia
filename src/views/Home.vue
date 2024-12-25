@@ -23,10 +23,23 @@ const confirm = async (id) => {
      message.error('No se ha podido borrar el url')
    }
  };
+
+
 const cancel = e => {
   console.log(e);
   message.error('Cancelado');
 };
+
+const copiarPortapapeles=(id) => { 
+    const path=window.location.href
+    console.log(path)
+    try {
+    navigator.clipboard.writeText(path+id);
+    return message.success('Copiado correctamente');
+    } catch (err) {
+     return message.error('No se pudo copiar');
+    }
+ };
 
 
 
@@ -40,7 +53,7 @@ const cancel = e => {
         <add-form></add-form>
         <h2>Lista de URL´S</h2>
         <a-space direction="vertical" v-if="!useDataBase.loadingDoc" style="width: 100%">
-            <a-card title="URL´S" style="width: 100%" v-for="item of useDataBase.documents" :key="item.id">
+            <a-card :title="item.id" style="width: 100%" v-for="item of useDataBase.documents" :key="item.id">
                 <template #extra>
                     <a-space>
                         <a-popconfirm title="Eliminar esta tarea?" ok-text="Confirmar" cancel-text="Cancelar"
@@ -48,13 +61,10 @@ const cancel = e => {
                             <a-button danger>Eliminar</a-button>
                         </a-popconfirm>
                         <a-button type="primary" @click="router.push(`/editar/${item.id}`)">Editar</a-button>
+                        <a-button @click="copiarPortapapeles(item.id)">Copiar</a-button>
                     </a-space>
                 </template>
                 <p>
-                    Id de la URL: {{ item.id }}
-                    <br>
-                    Short de la URL: {{ item.short }}
-                    <br>
                     Nombre de la URL: {{ item.name }}
                     <br>
                 </p>
